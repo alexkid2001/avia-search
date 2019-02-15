@@ -40,8 +40,7 @@
             return {
                 offers:[],
                 requestStatus: '',
-                requestMsg: '',
-                offers: []
+                requestMsg: ''
             }
         },
         methods: {

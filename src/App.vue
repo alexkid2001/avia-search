@@ -1,51 +1,60 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <div class="search-panel">
-      <iata-select
-              :requestHeader="requestHeader"
-              :label="labelDeparture"
-              @checkAirport="checkIataDeparture"
-      >
-      </iata-select>
-      <iata-select
-              :requestHeader="requestHeader"
-              :label="labelArrival"
-              @checkAirport="checkIataArrival"
-      ></iata-select>
-      <div class="class-select">
-        <template v-for="(fClass, index) in flightClasses">
-          <label class="class-select__item">
-            <input type="radio" :value="fClass" v-model="selectedClass">
-            <span class="class-select__name" >{{fClass.name}}</span>
-          </label>
-        </template>
-      </div>
-      <datepicker v-modal="date"></datepicker>
-      <div class="button" @click="searchClick">Поиск</div>
-    </div>
-    <div class="search-params">
-      <div class="search-params__title">Параметры поиска</div>
-      <div class="search-params__item">Departure  - {{ iataDeparture }} </div>
-      <div class="search-params__item">Arriaval - {{ iataArrival }}</div>
-      <div class="search-params__item">Date - {{ date}}</div>
-      <div class="search-params__item">Flight Class - {{ selectedClass.name }} ( {{selectedClass.code}} )</div>
-    </div>
+    <div id="app">
+        <img alt="Vue logo" src="./assets/logo.png">
+        <div class="search-panel">
+            <iata-select
+                  :requestHeader="requestHeader"
+                  :label="labelDeparture"
+                  @checkAirport="checkIataDeparture">
 
-  </div>
+            </iata-select>
+            <iata-select
+                  :requestHeader="requestHeader"
+                  :label="labelArrival"
+                  @checkAirport="checkIataArrival">
+
+            </iata-select>
+            <div class="class-select">
+            <template v-for="(fClass, index) in flightClasses">
+                <label class="class-select__item">
+                    <input type="radio" :value="fClass" v-model="selectedClass">
+                    <span class="class-select__name" >{{fClass.name}}</span>
+                </label>
+            </template>
+            </div>
+            <datepicker v-model="date"></datepicker>
+            <div class="button" @click="searchClick">Поиск</div>
+        </div>
+        <div class="search-params">
+            <div class="search-params__title">Параметры поиска</div>
+            <div class="search-params__item">Departure  - {{ iataDeparture }} </div>
+            <div class="search-params__item">Arriaval - {{ iataArrival }}</div>
+            <div class="search-params__item">Date - {{ searchDate }}</div>
+            <div class="search-params__item">Flight Class - {{ selectedClass.name }} ( {{selectedClass.code}} )</div>
+        </div>
+
+        <offers-block :request_id="request_id" >
+
+        </offers-block>
+
+    </div>
 </template>
 
 <script>
- // import HelloWorld from './components/Offers'
- import IATASelect from './components/IATAselect'
+import Offers from './components/Offers'
+import IATASelect from './components/IATAselect'
+import Datepicker from 'vuejs-datepicker'
 
- const app_id = '8e71ac9f18';
+const app_id = '8e71ac9f18';
+const date = new Date();
 
 export default {
     name: 'app',
     components: {
     // HelloWorld
-    'iata-select': IATASelect
+        'iata-select': IATASelect,
+        'offers-block': Offers,
+        'datepicker': Datepicker
     },
     data () {
         return  {
@@ -63,7 +72,7 @@ export default {
             selectedClass: [],
             labelDeparture: 'IATA departure',
             labelArrival: 'IATA arrival',
-            date: '',
+            date: date,
             searchQuery: {
                 directions: [
                     {
@@ -118,9 +127,10 @@ export default {
             console.log(this.requestHeader);
             console.log('Departure - ' + this.iataDeparture);
             console.log('Arrival - ' + this.iataArrival);
-            console.log('Date - ' + this.date);
+            console.log('Date - ' + this.searchDate);
             this.searchQuery.directions[0].departure_code = this.iataDeparture;
             this.searchQuery.directions[0].arrival_code = this.iataArrival;
+            this.searchQuery.directions[0].date = this.searchDate;
             this.searchQuery.class = this.selectedClass.code;
             console.log(this.searchQuery);
             this.$http.post(this.urlSearch, this.searchQuery, this.requestHeader)
@@ -134,8 +144,10 @@ export default {
                     console.log(err);
                 });
         },
-        customFormatter(date) {
-            return date.format('MMMM Do YYYY, h:mm:ss a');
+    },
+    computed: {
+        searchDate () {
+            return this.date.getFullYear() + '-' + ( '0' + (this.date.getMonth() + 1)).slice(-2) + '-' + ('0' + this.date.getDate()).slice(-2);
         }
     }
 
