@@ -1,6 +1,5 @@
 <template>
     <div id="app">
-        <img alt="Vue logo" src="./assets/logo.png">
         <div class="search-panel">
             <iata-select
                   :requestHeader="requestHeader"
@@ -22,18 +21,28 @@
                 </label>
             </template>
             </div>
-            <datepicker v-model="date"></datepicker>
+            <div class="etm-input">
+                <div class="etm-input__title">Дата вылета</div>
+                <datepicker v-model="date"></datepicker>
+            </div>
             <div class="button" @click="searchClick">Поиск</div>
         </div>
         <div class="search-params">
-            <div class="search-params__title">Параметры поиска</div>
-            <div class="search-params__item">Departure  - {{ iataDeparture }} </div>
-            <div class="search-params__item">Arriaval - {{ iataArrival }}</div>
-            <div class="search-params__item">Date - {{ searchDate }}</div>
-            <div class="search-params__item">Flight Class - {{ selectedClass.name }} ( {{selectedClass.code}} )</div>
+            <h3>Входные параметры запроса</h3>
+            <div class="search-params__item">Departure  - <b>{{ iataDeparture }}</b> </div>
+            <div class="search-params__item">Arriaval - <b>{{ iataArrival }}</b></div>
+            <div class="search-params__item">Date - <b>{{ searchDate }}</b></div>
+            <div class="search-params__item">Flight Class - <b>{{ selectedClass.name }} ( {{selectedClass.code}} ) </b></div>
+
+            <h3>Результаты поиска</h3>
+            <div class="search-params__item">Request ID - <b>{{ request_id }}</b></div>
+
+
         </div>
 
-        <offers-block :request_id="request_id" >
+
+        <offers-block   :request_id="request_id"
+                        :requestHeader="requestHeader" >
 
         </offers-block>
 
@@ -47,6 +56,7 @@ import Datepicker from 'vuejs-datepicker'
 
 const app_id = '8e71ac9f18';
 const date = new Date();
+const timeLimit = 1300000;
 
 export default {
     name: 'app',
@@ -85,22 +95,24 @@ export default {
                 adult_qnt: 1,
                 child_qnt: 0,
                 infant_qnt: 0,
-                passenger_category: "",
+                passenger_category: "YCD",
                 class: "E",
                 direct: true,
                 flexible: true,
-                max_price: '10000000',
+                max_price: '50',
                 airlines: [],
-                fare_types: []
+                fare_types: ["PUB", "NEG"]
             },
             urlSearch: 'https://api-stage.etm-system.com/api/air/search',
         }
     },
     created: function () {
-        if(!localStorage.api_key) {
+        let now = new Date;
+        if((!localStorage.api_key) || ((now.getTime() - localStorage.time) > timeLimit)) {
             this.$http.get('https://api-stage.etm-system.com/api/login/' + app_id)
                 .then(function (response) {
                     localStorage.api_key = response.data.etm_auth_key;
+                    localStorage.time = now.getTime();
                 })
         }
         else {

@@ -1,0 +1,131 @@
+{
+  "status": "inProcess",
+  "message": "Нет ошибок",
+  "is_round": true,
+  "is_multy": false,
+  "currency": "RUB",
+  "available_currencies": [
+    "EUR",
+    "RUB"
+  ],
+  "sort": "price",
+  "directions": [
+    {
+      "dir_number": 1,
+      "date": "2018-04-28",
+      "departure_code": "MOW",
+      "departure_name": "Москва",
+      "departure_country": "RU",
+      "arrival_code": "LED",
+      "arrival_name": "Санкт-Петербург",
+      "arrival_country": "RU"
+    }
+  ],
+  "offers": [
+    {
+      "carrier_code": "SU",
+      "carrier_name": "Аэрофлот",
+      "carrier_logo": "https://crm.etm-system.com/images/airline/SU.png",
+      "min_price": 5320,
+      "offers": [
+        {
+          "min_price": 5320,
+          "segments": [
+            {
+              "segment_id": 881516214,
+              "buy_id": "839493372_881516214",
+              "dir_number": 1,
+              "flight_number": "205",
+              "flight_carrier_code": "SU",
+              "flight_carrier_name": "Аэрофлот",
+              "departure_airport": "VKO",
+              "departure_timestamp": 1524888600,
+              "arrival_airport": "LED",
+              "arrival_timestamp": 1524888600,
+              "duration_formated": "1 ч 20 мин",
+              "duration_minutes": 80,
+              "stops": 0,
+              "flights_info": [
+                {
+                  "date": "2018-04-28",
+                  "departure_country": "RU",
+                  "departure_city": "Москва",
+                  "departure_airport": "VKO",
+                  "departure_terminal": "string",
+                  "departure_local_time": "08:20",
+                  "departure_timezone": "GMT+03:00",
+                  "arrival_country": "RU",
+                  "arrival_city": "Санкт-Перебург",
+                  "arrival_airport": "LED",
+                  "arrival_terminal": "string",
+                  "arrival_local_time": "09:40",
+                  "arrival_timezone": "GMT+03:00",
+                  "flight_number_print": "SU-205",
+                  "duration_formated": "1 ч 20 мин",
+                  "stop_time": "9 ч 40 мин"
+                }
+              ],
+              "tarif": "NVUR",
+              "class": "N",
+              "price": 6975,
+              "baggage": "1PC"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "carrier_code": "SU",
+      "carrier_name": "Аэрофлот",
+      "carrier_logo": "https://crm.etm-system.com/images/airline/SU.png",
+      "min_price": 5320,
+      "offers": [
+        {
+          "min_price": 5320,
+          "segments": [
+            {
+              "segment_id": 881516214,
+              "buy_id": "839493372_881516214",
+              "dir_number": 1,
+              "flight_number": "205",
+              "flight_carrier_code": "SU",
+              "flight_carrier_name": "Аэрофлот",
+              "departure_airport": "VKO",
+              "departure_timestamp": 1524888600,
+              "arrival_airport": "LED",
+              "arrival_timestamp": 1524888600,
+              "duration_formated": "1 ч 20 мин",
+              "duration_minutes": 80,
+              "stops": 0,
+              "flights_info": [
+                {
+                  "date": "2018-04-28",
+                  "departure_country": "RU",
+                  "departure_city": "Москва",
+                  "departure_airport": "VKO",
+                  "departure_terminal": "string",
+                  "departure_local_time": "08:20",
+                  "departure_timezone": "GMT+03:00",
+                  "arrival_country": "RU",
+                  "arrival_city": "Санкт-Перебург",
+                  "arrival_airport": "LED",
+                  "arrival_terminal": "string",
+                  "arrival_local_time": "09:40",
+                  "arrival_timezone": "GMT+03:00",
+                  "flight_number_print": "SU-205",
+                  "duration_formated": "1 ч 20 мин",
+                  "stop_time": "9 ч 40 мин"
+                }
+              ],
+              "tarif": "NVUR",
+              "class": "N",
+              "price": 6975,
+              "baggage": "1PC"
+            }
+          ]
+        }
+      ]
+    }
+
+  ]
+}
