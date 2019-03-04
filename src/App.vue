@@ -95,12 +95,12 @@ export default {
                 adult_qnt: 1,
                 child_qnt: 0,
                 infant_qnt: 0,
-                passenger_category: "YCD",
+                // passenger_category: "YCD",
                 class: "E",
-                direct: true,
-                flexible: true,
+                // direct: true,
+                // flexible: true,
                 max_price: '50',
-                airlines: [],
+                // airlines: [],
                 fare_types: ["PUB", "NEG"]
             },
             urlSearch: 'https://api-stage.etm-system.com/api/air/search',
@@ -118,7 +118,14 @@ export default {
         else {
             this.api_key = localStorage.api_key;
         }
-        this.requestHeader = { headers: { "etm-auth-key": this.api_key }};
+        this.requestHeader = { headers: {
+                "Accept": "application/json, text/plain, */*",
+                "Content-Type": "application/json;charset=utf-8",
+                "X-Requested-With": "XMLHttpRequest",
+                "etm-auth-key": this.api_key }};
+        console.log('Request Header :');
+        console.log(this.requestHeader);
+
 
         console.log(this.api_key);
         console.log(this.requestHeader);
@@ -140,11 +147,13 @@ export default {
             console.log('Departure - ' + this.iataDeparture);
             console.log('Arrival - ' + this.iataArrival);
             console.log('Date - ' + this.searchDate);
+            console.log('urlSearch - ' + this.urlSearch);
             this.searchQuery.directions[0].departure_code = this.iataDeparture;
             this.searchQuery.directions[0].arrival_code = this.iataArrival;
             this.searchQuery.directions[0].date = this.searchDate;
             this.searchQuery.class = this.selectedClass.code;
-            console.log(this.searchQuery);
+            console.info('searchQuery: ');
+            console.info(this.searchQuery);
             this.$http.post(this.urlSearch, this.searchQuery, this.requestHeader)
                 .then(response => {
                     console.log('status - ' + response.body.status);

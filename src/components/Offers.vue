@@ -9,33 +9,27 @@
                 Если нет результатов, попробуйте ID предыдущих запросов
             </div>
             <label class="etm-input">
-                <input type="text" v-bind:value="request_id">
+                <input type="text" :value="request_id">
             </label>
             <div class="button button_inline" @click="localDataShow">Показать другой результат</div>
         </div>
 
         <div class="offers-block__wrap">
-            <div class="offers-block__list" v-bind:key="index" v-for="(offer, index) in this.offers">
-                <offers :offer="offer"></offers>
-                <!--<div class="accordion">-->
-                    <!--<div class="offers__airline airline accordion__visible">-->
-                        <!--<div class="airline__logo"><img v-bind:src="offer.carrier_logo" alt=""></div>-->
-                        <!--<div class="airline__name">{{offer.carrier_name}}</div>-->
-                        <!--<div class="airline__minprice">Цена от {{offer.min_price}}</div>-->
-                    <!--</div>-->
-                    <!--<div class="accordion__hide">-->
-                        <!--<div class="offers__offer offer" v-bind:key="soIndex" v-for="(singleOffer, soIndex) in offer.offers">-->
-                            <!--<div class="offer__flight-number">Рейс - {{singleOffer.flight_number}}</div>-->
-                            <!--<div class="offer__airline-name">{{singleOffer.flight_carrier_name}}</div>-->
-                            <!--<div class="offer__departure-airport">{{singleOffer.departure_airport}}</div>-->
-                            <!--<div class="offer__departure-time">{{singleOffer.departure_timestamp}}</div>-->
-                            <!--<div class="offer__arrival-airport">{{singleOffer.arrival_airport}}</div>-->
-                            <!--<div class="offer__arrival-time">{{singleOffer.arrival_timestamp}}</div>-->
-                            <!--<div class="offer__duration-time">{{singleOffer.duration_formated}}</div>-->
-                        <!--</div>-->
-
-                    <!--</div>-->
-                <!--</div>-->
+            <div class="offer-block__filter">
+                <vue-slider
+                    ref="slider"
+                    v-bind="price"
+                    v-model="price.value"
+                    @input="maxPrice">
+                </vue-slider>
+            </div>
+            <div>{{price.value[1]}}</div>
+            <div>{{max}}</div>
+            <div class="offers-block__list" v-bind:key="index" v-for="(offer, index) in filteredPrice()">
+                <offers
+                    :offer="offer"
+                    :price="price.value">
+                </offers>
             </div>
         </div>
     </div>
@@ -43,11 +37,13 @@
 
 <script>
     import Offer from './Offer'
+    import vueSlider from 'vue-slider-component'
 
     export default {
         name: "offers-block",
         components: {
-            'offers': Offer
+            'offers': Offer,
+            vueSlider
         },
         props: [
             'request_id',
@@ -57,7 +53,14 @@
             return {
                 offers:[],
                 requestStatus: '',
-                requestMsg: ''
+                requestMsg: '',
+                // maxPrice: 0,
+                max: 0,
+                price: {
+                    value: [0, 5500],
+                    min: 0,
+                    max: 5500
+                }
             }
         },
         methods: {
@@ -79,18 +82,65 @@
                     })
             },
             localDataShow() {
-                // // let json = require('data/16707600.json');
-                // console.log('add json data...');
-                // this.$http.get('http://localhost:8080/data/16707600.json')
-                //     .then(response => {
-                //         this.offers = response.body.offers;
-                //         console.log(this.offers);
-                //     })
-                //     .catch(err => {
-                //     console.log('status - ' + err.status);
-                //     console.log('error - ' + err.error);
-                // })
-                this.request_id = '16707825';
+                // let json = require('data/16707600.json');
+                console.log('add json data...');
+                this.$http.get('data/16707600.json')
+                    .then(response => {
+                        this.offers = response.body.offers;
+                        console.log(this.offers);
+                        this.maxminPrices(this.offers);
+                    })
+                    .catch(err => {
+                        console.log('status - ' + err.status);
+                        console.log('error - ' + err.error);
+                })
+                // this.request_id = '16707825';
+            },
+
+            maxminPrices(obj) {
+                let maxPrice = 0;
+                obj.forEach(function(offer, i) {
+                    // console.log('Offer - ' + i);
+                    offer.offers.forEach(function(item) {
+                        item.segments.forEach(function(segment, j) {
+                            // console.log('Offer - ' + i + ' - segment - ' + j);
+                            // console.log(segment.price);
+                            if( segment.price > maxPrice ) {
+                                maxPrice = segment.price;
+                            }
+                        })
+                    })
+                });
+                this.price.max = maxPrice;
+                this.price.value = [0, maxPrice];
+            },
+            filteredPrice() {
+                let maxPrice = this.price.value[1];
+                let arrOffers = this.offers.filter(function (offer) {
+                    // return offer.min_price < maxPrice;
+                    let arrSegments =  offer.offers.filter(function(segment){
+                        let arrItem = segment.segments.filter(item => {
+                                return item.price < maxPrice;
+                        });
+                        if(arrItem.length > 0) {
+                            return true;
+                        }
+                        else {
+                            return  false;
+                        }
+                    });
+
+                    if(arrSegments.length > 0) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                });
+                return arrOffers;
+            },
+            maxPrice() {
+               this.max = this.price.value[1];
             }
         },
         watch: {
@@ -101,7 +151,6 @@
                 console.log('headers - ' + this.requestHeader);
                 this.updateSource();
             }
-
         }
     }
 </script>

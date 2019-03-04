@@ -25,7 +25,7 @@
 </template>
 
 <script>
-    const urlAirport = 'https://api-stage.etm-system.com/api/dictionaries/airports?filter=';
+    const urlAirport = 'https://api-stage.etm-system.com/api/dictionaries/cities?filter=';
     export default {
         name: "iata-select",
         props: [
@@ -53,7 +53,7 @@
             onChange () {
                 if((this.airportName.length === 4) && !this.isUpdate) {
                     this.isUpdate = true;
-                    this.$http.get(urlAirport + this.airportName, this.requestHeader)
+                    this.$http.get(urlAirport + this.airportName + '&locale=RU', this.requestHeader)
                         .then(response => {
                             console.log(response.data.data);
                             this.airports = response.data.data;
