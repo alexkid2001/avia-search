@@ -15,21 +15,29 @@
         </div>
 
         <div class="offers-block__wrap">
-            <div class="offer-block__filter">
-                <vue-slider
-                    ref="slider"
-                    v-bind="price"
-                    v-model="price.value"
-                    @input="maxPrice">
-                </vue-slider>
+            <div class="offers-block__filters">
+                <div class="filter">
+                    <div class="filter__name">Фильтр по цене:</div>
+                    <div class="filter__rule">
+                        <vue-slider
+                                ref="slider"
+                                v-bind="price"
+                                v-model="price.value"
+                                @input="maxPrice">
+                        </vue-slider>
+                    </div>
+                </div>
             </div>
-            <div>{{price.value[1]}}</div>
-            <div>{{max}}</div>
-            <div class="offers-block__list" v-bind:key="index" v-for="(offer, index) in filteredPrice()">
-                <offers
-                    :offer="offer"
-                    :price="price.value">
-                </offers>
+
+            <div class="offers-block__offers">
+
+                <div>Найдено {{offersCnt}} предложений</div>
+                <div class="offers-block__list" v-bind:key="index" v-for="(offer, index) in filteredPrice()">
+                    <offers
+                        :offer="offer"
+                        :price="price.value">
+                    </offers>
+                </div>
             </div>
         </div>
     </div>
@@ -59,8 +67,10 @@
                 price: {
                     value: [0, 5500],
                     min: 0,
-                    max: 5500
-                }
+                    max: 100,
+                    width: 'auto'
+                },
+                offersCnt: ''
             }
         },
         methods: {
@@ -116,31 +126,34 @@
             },
             filteredPrice() {
                 let maxPrice = this.price.value[1];
-                let arrOffers = this.offers.filter(function (offer) {
-                    // return offer.min_price < maxPrice;
-                    let arrSegments =  offer.offers.filter(function(segment){
-                        let arrItem = segment.segments.filter(item => {
-                                return item.price < maxPrice;
-                        });
-                        if(arrItem.length > 0) {
-                            return true;
-                        }
-                        else {
-                            return  false;
-                        }
-                    });
+                let minPrice = this.price.value[0];
+                let arrOffers;
 
-                    if(arrSegments.length > 0) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                });
+                arrOffers = this.offers.filter( offer => {
+                    let segment = offer.offers.filter( segment => {
+
+                        let arrItem = segment.segments.filter( item => {
+                            return item.price < maxPrice && item.price > minPrice
+                        })
+                        return arrItem.length > 0;
+                    })
+
+                    return segment.length > 0;
+                })
+                this.offersCnt = this.countOffer(arrOffers);
                 return arrOffers;
             },
             maxPrice() {
                this.max = this.price.value[1];
+            },
+            countOffer(obj) {
+                let cnt = 0;
+                obj.forEach(item => {
+                    item.offers.forEach( offer => {
+                        cnt += offer.segments.length;
+                    })
+                })
+                return cnt;
             }
         },
         watch: {
