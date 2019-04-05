@@ -6,11 +6,11 @@
 
         <div class="local-data">
             <div class="local-data__descr">
-                Если нет результатов, попробуйте ID предыдущих запросов
+                Если нет результатов, жми на кнопку (id=16707600)
             </div>
-            <label class="etm-input">
-                <input type="text" :value="request_id">
-            </label>
+            <!--<label class="etm-input">-->
+                <!--<input type="text" :value="request_id">-->
+            <!--</label>-->
             <div class="button button_inline" @click="localDataShow">Показать другой результат</div>
         </div>
 
